@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import HomeScreen from '../screens/HomeScreen'
 import PlannerScreen from '../screens/PlannerScreen'
+import WorkoutDetailScreen from '../screens/WorkoutDetailScreen';
 
 export default function Navigation() {
     return (
@@ -20,6 +21,7 @@ function RootNavigator() {
     return (
         <Stack.Navigator initialRouteName='Root' >
             <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+            <Stack.Screen name="WorkoutDetail" component={WorkoutDetailScreen} options={{title: 'Workout Info'}}/>
         </Stack.Navigator>
     )
 }
