@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { useWorkoutBySlug } from '../hooks/useWorkoutBySlug';
+import { PressableText } from '../components/styled/PressableText';
 
 type DetailParams = {
     route: {
@@ -11,14 +13,21 @@ type DetailParams = {
 type Navigation = NativeStackHeaderProps & DetailParams
 
 export default function WorkoutDetailScreen({ route }: Navigation) {
+    const workout = useWorkoutBySlug(route.params.slug)
+
+    if(!workout){
+        return null
+    }
     return (
-        <View style={styles.container}>
-            <Text style={styles.header}>Slug - {route.params.slug}</Text>
-            {/* <Text style={styles.header}>Slug - {(route.params as any).slug}</Text> */}
-            {/* <MontserratText
-                style={{fontSize: 30}}
-            >New Workouts</MontserratText> */}
-        </View>
+        <>
+            <View style={styles.container}>
+                <Text style={styles.header}>{workout.name}</Text>
+                <PressableText 
+                text="Check Sequence"
+                onPress={() => alert('open modal')}
+                />
+            </View>
+        </>
     )
 }
 
@@ -26,7 +35,7 @@ const styles = StyleSheet.create({
     container: {
         padding: '2rem',
         flex: 1,
-    }, 
+    },
     header: {
         fontSize: 20,
         fontWeight: 'bold',

@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, FlatList, Pressable } from 'react-native'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import data from '../data.json'
-import { Workout } from '../types/data';
 import WorkoutItem from '../components/WorkoutItem';
 import { MontserratText } from '../components/styled/MontserratText';
+import { useWorkouts } from '../hooks/useWorkouts';
 
 export default function HomeScreen({ navigation }: NativeStackHeaderProps) {
+    const workouts = useWorkouts()
+
     return (
         <View style={styles.container}>
             <Text style={styles.header}>New workouts</Text>
@@ -13,7 +14,7 @@ export default function HomeScreen({ navigation }: NativeStackHeaderProps) {
                 style={{fontSize: 30}}
             >New Workouts</MontserratText> */}
             <FlatList
-                data={data as Workout[]}
+                data={workouts}
                 keyExtractor={i => i.slug}
                 renderItem={({item}) => {
                     return (
