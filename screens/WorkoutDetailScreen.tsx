@@ -1,7 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Button } from 'react-native'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { useWorkoutBySlug } from '../hooks/useWorkoutBySlug';
 import { PressableText } from '../components/styled/PressableText';
+import { Modal } from '../components/styled/Modal';
+import { formatSec } from '../utils/time';
+import { FontAwesome } from '@expo/vector-icons';
+import WorkoutItem from '../components/WorkoutItem';
 
 type DetailParams = {
     route: {
@@ -13,19 +17,42 @@ type DetailParams = {
 type Navigation = NativeStackHeaderProps & DetailParams
 
 export default function WorkoutDetailScreen({ route }: Navigation) {
+
     const workout = useWorkoutBySlug(route.params.slug)
 
-    if(!workout){
+    if (!workout) {
         return null
     }
     return (
         <>
             <View style={styles.container}>
-                <Text style={styles.header}>{workout.name}</Text>
-                <PressableText 
-                text="Check Sequence"
-                onPress={() => alert('open modal')}
-                />
+                <WorkoutItem
+                    item={workout}
+                    childStyles={{marginTop: 10}}
+                >
+                    <Modal
+                        activator={({ handleOpen }) => (
+                            <PressableText
+                                onPress={handleOpen}
+                                text="Check Sequence"
+                            />
+                        )}
+                    >
+                        <View>
+                            {workout.sequence.map((s, i) =>
+                                <View key={s.slug} style={styles.sequenceItem}>
+                                    <Text >
+                                        {s.name}, {s.type} | {formatSec(s.duration)}
+                                    </Text>
+                                    {i !== workout.sequence.length - 1 &&
+                                        <FontAwesome name="arrow-down" size={20} />
+                                    }
+                                </View>
+                            )}
+                        </View>
+                    </Modal>
+                </WorkoutItem>
+
             </View>
         </>
     )
@@ -41,4 +68,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontFamily: "monstserrat-bold"
     },
+    sequenceItem: {
+        alignItems: 'center'
+    }
 })
