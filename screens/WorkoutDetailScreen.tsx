@@ -6,6 +6,9 @@ import { Modal } from '../components/styled/Modal';
 import { formatSec } from '../utils/time';
 import { FontAwesome } from '@expo/vector-icons';
 import WorkoutItem from '../components/WorkoutItem';
+import { useEffect, useState } from 'react';
+import { SequenceItem } from '../types/data';
+import { useCountDown } from '../hooks/useCountDown';
 
 type DetailParams = {
     route: {
@@ -17,8 +20,20 @@ type DetailParams = {
 type Navigation = NativeStackHeaderProps & DetailParams
 
 export default function WorkoutDetailScreen({ route }: Navigation) {
-
+    const [sequence, setSequence] = useState<SequenceItem[]>([])
+    const [trackerIdx, setStrackerIdx] = useState<number>(-1)
     const workout = useWorkoutBySlug(route.params.slug)
+    
+    const countDown = useCountDown(
+        trackerIdx,  
+        trackerIdx >= 0 ? sequence[trackerIdx].duration : -1
+    )
+    
+
+    const addItemToSequence = (idx: number) => {
+        setSequence([...sequence, workout!.sequence[idx]])
+        setStrackerIdx(idx)
+    }
 
     if (!workout) {
         return null
@@ -28,7 +43,7 @@ export default function WorkoutDetailScreen({ route }: Navigation) {
             <View style={styles.container}>
                 <WorkoutItem
                     item={workout}
-                    childStyles={{marginTop: 10}}
+                    childStyles={{ marginTop: 10 }}
                 >
                     <Modal
                         activator={({ handleOpen }) => (
@@ -52,6 +67,14 @@ export default function WorkoutDetailScreen({ route }: Navigation) {
                         </View>
                     </Modal>
                 </WorkoutItem>
+                <View>
+                    {sequence.length === 0 &&
+                        <FontAwesome
+                            name="play-circle-o"
+                            size={100}
+                            onPress={() => addItemToSequence(0)} />
+                    }
+                </View>
 
             </View>
         </>
