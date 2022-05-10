@@ -23,21 +23,36 @@ export default function WorkoutDetailScreen({ route }: Navigation) {
     const [sequence, setSequence] = useState<SequenceItem[]>([])
     const [trackerIdx, setStrackerIdx] = useState<number>(-1)
     const workout = useWorkoutBySlug(route.params.slug)
-    
-    const countDown = useCountDown(
-        trackerIdx,  
+
+    const { countDown, isRunning, stop, start } = useCountDown(
+        trackerIdx,
         trackerIdx >= 0 ? sequence[trackerIdx].duration : -1
     )
-    
+
+    useEffect(() => {
+        //consistencies so we don't run it when there's no workout or no further sequences
+        if (!workout) return;
+        if (trackerIdx >= workout.sequence.length - 1) return;
+
+        if (countDown === 0) {
+            addItemToSequence(trackerIdx + 1)
+        }
+        console.log('detail screen', countDown)
+    }, [countDown])
+
 
     const addItemToSequence = (idx: number) => {
         setSequence([...sequence, workout!.sequence[idx]])
         setStrackerIdx(idx)
+        start()
     }
 
     if (!workout) {
         return null
     }
+
+    const hasReachedEnd = sequence.length === workout.sequence.length && countDown === 0
+
     return (
         <>
             <View style={styles.container}>
@@ -67,13 +82,30 @@ export default function WorkoutDetailScreen({ route }: Navigation) {
                         </View>
                     </Modal>
                 </WorkoutItem>
-                <View>
+                <View style={styles.centerView}>
                     {sequence.length === 0 &&
                         <FontAwesome
                             name="play-circle-o"
                             size={100}
                             onPress={() => addItemToSequence(0)} />
                     }
+                    {
+                        sequence.length > 0 && countDown >= 0 &&
+                        <View>
+                            <Text style={{ fontSize: 55 }}>{countDown}</Text>
+                        </View>
+                    }
+                </View>
+                <View style={{ alignItems: 'center' }}>
+                    <Text style={{ fontSize: 60, fontWeight: 'bold' }}>
+                        {
+                            sequence.length === 0 ?
+                                "Prepare" :
+                                hasReachedEnd ?
+                                    "Great Job" :
+                                    sequence[trackerIdx].name
+                        }
+                    </Text>
                 </View>
 
             </View>
@@ -93,5 +125,11 @@ const styles = StyleSheet.create({
     },
     sequenceItem: {
         alignItems: 'center'
+    },
+    centerView: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
+        marginBottom: 20
     }
 })
