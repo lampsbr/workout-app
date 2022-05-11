@@ -23,7 +23,7 @@ export function useCountDown (
                     // console.log(c)
                     return c-1
                 })
-            }, 30)
+            }, 1000)
         }
 
         return cleanUp
