@@ -8,7 +8,7 @@ import { useEffect, useState, useRef } from "react";
  */
 export function useCountDown (
     idx: number,
-    initialCount: number
+    initialCount: number = -1
 ) {
     const intervalRef = useRef<number>()
     const [countDown, setCountDown] = useState(initialCount)
@@ -23,7 +23,7 @@ export function useCountDown (
                     // console.log(c)
                     return c-1
                 })
-            }, 100)
+            }, 30)
         }
 
         return cleanUp
