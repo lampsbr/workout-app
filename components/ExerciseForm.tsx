@@ -4,7 +4,7 @@ import { PressableText } from "./styled/PressableText";
 import { useForm, Controller } from "react-hook-form";
 
 
-export type ExerciseForm = {
+export type ExerciseFormData = {
     name: string,
     duration: string,
     reps?: string,
@@ -12,12 +12,12 @@ export type ExerciseForm = {
 }
 
 type WorkoutProps = {
-    onSubmit: (form: ExerciseForm) => void
+    onSubmit: (form: ExerciseFormData) => void
 }
 
 const selectionItems = ['Exercise', 'Break', 'Stretch']
 
-export default function WorkoutForm({ onSubmit }: WorkoutProps) {
+export default function ExerciseForm({ onSubmit }: WorkoutProps) {
     const { control, handleSubmit } = useForm()
     const [isSelectionOn, setSelectionOn] = useState(false)
 
@@ -108,7 +108,7 @@ export default function WorkoutForm({ onSubmit }: WorkoutProps) {
                 <PressableText
                     text="Submit"
                     onPress={handleSubmit((data) => {
-                        onSubmit(data as ExerciseForm)
+                        onSubmit(data as ExerciseFormData)
                     })}
                 />
             </View>
