@@ -6,12 +6,19 @@ type ModalProps = {
     activator?: FunctionComponent<{
         handleOpen: () => void
     }>,
-    children: React.ReactNode
+    children: FunctionComponent<{
+        handleOpen: () => void,
+        handleClose: () => void,
+    }>
 
 }
 
 export function Modal({ activator: Activator, children }: ModalProps) {
     const [isModalVisible, setModalVisible] = useState(false)
+
+    const handleOpen = () => setModalVisible(true)
+    const handleClose = () => setModalVisible(false)
+
     return (
         <>
             <RNModal
@@ -22,23 +29,23 @@ export function Modal({ activator: Activator, children }: ModalProps) {
                 <View style={styles.centerView}>
                     <>
                         <View style={styles.contentView}>
-                            {children}
+                            {children({handleOpen, handleClose})}
                         </View>
                         <PressableText
                             text="close"
-                            onPress={() => setModalVisible(false)}
+                            onPress={handleClose}
                         />
                     </>
                 </View>
             </RNModal>
             {Activator ?
                 <Activator
-                    handleOpen={() => setModalVisible(true)}
+                    handleOpen={handleOpen}
                 />
                 :
                 <PressableText
                     text="Open"
-                    onPress={() => setModalVisible(true)}
+                    onPress={handleOpen}
                 />
             }
         </>

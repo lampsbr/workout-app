@@ -23,10 +23,6 @@ export default function ExerciseForm({ onSubmit }: WorkoutProps) {
 
     return (
         <View style={styles.container}>
-            <Text>
-
-                Exercise Form
-            </Text>
             <View style={styles.rowContainer}>
                 <Controller
                     control={control}
@@ -106,7 +102,7 @@ export default function ExerciseForm({ onSubmit }: WorkoutProps) {
             </View>
             <View>
                 <PressableText
-                    text="Submit"
+                    text="Add"
                     onPress={handleSubmit((data) => {
                         onSubmit(data as ExerciseFormData)
                     })}
